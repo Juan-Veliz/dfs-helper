@@ -1,0 +1,22 @@
+{
+  "name": "dofus-helper-server",
+  "version": "1.0.0",
+  "description": "Proyecto personal que busca facilitar la busca de un equipo para los personajes de dofus",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juan-Veliz/dfs-helper.git"
+  },
+  "author": "Juan Veliz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Juan-Veliz/dfs-helper/issues"
+  },
+  "homepage": "https://github.com/Juan-Veliz/dfs-helper#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
