@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('./index');
-// const ItemCategory = require('./itemCategory');
-// const { belongsTo } = require('./itemCategory');
+const ItemCategory = require('./itemCategory');
+
 
 class Item extends Model {}
 
@@ -15,7 +15,12 @@ Item.init({
   },
   cat_id: {
     type: DataTypes.NUMBER,
-    allowNull: false
+    allowNull: false,
+    references:{
+      type: DataTypes.NUMBER,
+      model:ItemCategory,
+      key:'id'
+    }
   },
   name:{
       type: DataTypes.STRING
@@ -25,7 +30,8 @@ Item.init({
   },
   description:{
       type:DataTypes.TEXT
-  }
+  },
+
 }, {
   // Other model options go here
   sequelize, // We need to pass the connection instance
@@ -35,10 +41,15 @@ Item.init({
   updatedAt: false,
 });
 
-// sequelize.Item.belongsTo(ItemCategory, {
-//   foreignKey:'cat_id'
-// })
+// relationShips
+Item.hasOne(ItemCategory,{
+  foreignKey:'id',
+  sourceKey:'cat_id'
+});
+ItemCategory.hasMany(Item,{
+  foreignKey:'cat_id',
+  sourceKey:'id'
+})
 
-// );
 
 module.exports = Item;

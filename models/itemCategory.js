@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('./index');
+const Item = require('./item');
 
 class ItemCategory extends Model {}
 
@@ -26,5 +27,9 @@ ItemCategory.init({
   createdAt:false,
   updatedAt: false
 });
+
+// ItemCategory.hasMany(Item,{
+//   foreignKey:'id'
+// });
 
 module.exports = ItemCategory;

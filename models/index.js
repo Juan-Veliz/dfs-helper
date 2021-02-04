@@ -1,9 +1,5 @@
 const { Sequelize } = require('sequelize');
-// const ItemCategory = require('./itemCategory');
-// require('./item');
-// require('./itemCategory')
 const sequelize = new Sequelize('mysql://juano:Juano1392_@localhost:3306/dofus') // Example for postgres
-
 
 module.exports = sequelize;
 
