@@ -2,7 +2,9 @@
 const express = require('express');
 const Item = require('../models/item');
 const ItemCategory = require('../models/itemCategory');
+const ItemClass = require('../models/itemClass')
 const ItemCategoryController = express.Router();
+require('../models/relationShips')
 let include = [];
 /*
 **  GET, POST on item/
@@ -15,10 +17,10 @@ ItemCategoryController.route('/')
             */
             params = req.query;
             filters = params.filter;
-            perPage = Number (params['per-page']) || 20;
+            perPage = (Number (params['per-page'])) || (Number (params['perPage'])) || 20;
             page = (Number (params.page)-1)*perPage || 0;
-            if(params.expands){
-                expands = params.expands.split(',') || [];
+            if(params.expand){
+                expands = params.expand.split(',') || [];
                 extraFields(expands);
             }
 
@@ -70,8 +72,8 @@ ItemCategoryController.route('/:id')
             **  resolver request
             */
             params = req.query;
-            if(params.expands){
-                expands = params.expands.split(',') || [];
+            if(params.expand){
+                expands = params.expand.split(',') || [];
                 extraFields(expands);
             }
 
@@ -138,10 +140,19 @@ ItemCategoryController.route('/:id')
 */
 function extraFields(array){
     if(array.includes('item')){
-        include.push({ model: Item, required: false});
+        include.push({ 
+            model: Item,
+            required: true,
+            as: 'items',
+            all:true
+        });
     }
     if(array.includes('clase')){
-        // include.push({ model: ItemCategory, required: false});
+        include.push({ 
+            model: ItemClass, 
+            required: false,
+            as:'classes'
+        });
     }
 }
     

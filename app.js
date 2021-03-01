@@ -3,6 +3,7 @@ const express = require('express');
 const router = require('./controllers/index')
 const app = express();
 const bodyParser = require('body-parser');
+const sequelize = require('./models');
 
 app.use(bodyParser.json());
 app.use(`/api`,router);

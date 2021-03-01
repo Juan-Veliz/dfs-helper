@@ -2,23 +2,28 @@
 const express = require('express');
 const Item = require('../models/item');
 const ItemCategory = require('../models/itemCategory');
+const ItemClass = require('../models/itemClass');
+const ItemRecipe = require('../models/itemRecipe');
 const ItemController = express.Router();
+require('../models/relationShips')
+
 let include = [];
 /*
 **  GET, POST on item/
 */
 ItemController.route('/')
-    .get(async( req, res )=>{
-        try{
+    .get(async (req, res) => {
+        try {
             /*
             ** resolver request
             */
             params = req.query;
             filters = params.filter;
-            perPage = Number (params['per-page']) || 20;
-            page = (Number (params.page)-1)*perPage || 0;
-            if(params.expands){
-                expands = params.expands.split(',') || [];
+            perPage = (Number(params['per-page'])) || (Number(params['perPage'])) || 20;
+            order = params['orderBy'] || 'id';
+            page = (Number(params.page) - 1) * perPage || 0;
+            if (params.expand) {
+                expands = params.expand.split(',') || [];
                 extraFields(expands);
             }
 
@@ -27,18 +32,23 @@ ItemController.route('/')
             /*
             **  obtener informacion
             */
+           console.log(`ecludes : ${include}`)
             const model = await Item.findAll({
                 limit: perPage,
                 offset: page,
-                include:include,
-                where:filters
+                order:[order],
+                include,
+                where: filters
             })
+
+            
+
             /*
             ** enviar respuesta
             */
             res.send(model);
         }
-        catch( e ){
+        catch (e) {
             /*
             **  enviar error
             */
@@ -46,13 +56,13 @@ ItemController.route('/')
             res.send(e.message);
         }
     })
-    .post(async(req, res)=>{
-        try{
+    .post(async (req, res) => {
+        try {
             const model = new Item(req.body);
             await model.save();
             res.send(model);
         }
-        catch(e){
+        catch (e) {
             /*
             **  enviar error
             */
@@ -65,14 +75,14 @@ ItemController.route('/')
 **  VIEW, UPDATE, DELETE on item/:id
 */
 ItemController.route('/:id')
-    .get(async( req, res )=>{
-        try{
+    .get(async (req, res) => {
+        try {
             /*
             **  resolver request
             */
             params = req.query;
-            if(params.expands){
-                expands = params.expands.split(',') || [];
+            if (params.expand) {
+                expands = params.expand.split(',') || [];
                 extraFields(expands);
             }
 
@@ -80,12 +90,12 @@ ItemController.route('/:id')
             /*
             **  obtener informacion
             */
-            const model = await Item.findByPk(req.params.id,{
-                include:include
+            const model = await Item.findByPk(req.params.id, {
+                include: include
             });
             res.send(model);
         }
-        catch( e ){
+        catch (e) {
             /*
             **  enviar error
             */
@@ -93,8 +103,8 @@ ItemController.route('/:id')
             res.send(e.message);
         }
     })
-    .put(async(req, res)=>{
-        try{
+    .put(async (req, res) => {
+        try {
             const model = req.body;
             /*
             **  obtener informacion
@@ -110,7 +120,7 @@ ItemController.route('/:id')
             */
             res.send(item);
         }
-        catch(e){
+        catch (e) {
             /*
             **  enviar error
             */
@@ -118,14 +128,14 @@ ItemController.route('/:id')
             res.send(e.message);
         }
     })
-    .delete(async(req, res)=>{
-        try{
+    .delete(async (req, res) => {
+        try {
             /*
             **  borrado logico de objeto
             */
 
         }
-        catch(e){
+        catch (e) {
             /*
             **  enviar error
             */
@@ -138,15 +148,39 @@ ItemController.route('/:id')
 /*
 **  Joins
 */
-function extraFields (array){
-    console.log("asd")
-    if(array.includes('categoria')){
-        console.log("in")
-        include.push({ model: ItemCategory, required: false});
+function extraFields(array) {
+    if( array.includes('clase')){
+        include.push({
+            model: ItemCategory,
+            required: true,
+            as: 'category',
+            all:true,
+            include: {
+                model: ItemClass,
+                required: false,
+                as:'class'
+            }
+        });
     }
-    if(array.includes('clase')){
-        // include.push({ model: ItemCategory, required: false});
+    else{
+        if (array.includes('categoria')) {
+            include.push({
+                model: ItemCategory,
+                required: true,
+                as: 'category',
+                all:true
+            });
+        }
+    }
+    console.log(array.includes('recipe'))
+    if( array.includes('recipe')){
+        include.push({
+            model: ItemRecipe,
+            required: false,
+            as:'recipe',
+            all:true
+        })
     }
 }
-    
+
 module.exports = ItemController;
