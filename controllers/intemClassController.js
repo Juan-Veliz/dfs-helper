@@ -1,15 +1,14 @@
 
 const express = require('express');
-const Item = require('../models/item');
-const ItemCategory = require('../models/itemCategory');
 const ItemClass = require('../models/itemClass')
-const ItemCategoryController = express.Router();
+const ItemClassController = express.Router();
 require('../models/relationShips')
 let include = [];
+
 /*
 **  GET, POST on item/
 */
-ItemCategoryController.route('/')
+ItemClassController.route('/')
     .get(async( req, res )=>{
         try{
             /*
@@ -28,7 +27,7 @@ ItemCategoryController.route('/')
             /*
             **  obtener informacion
             */
-            const model = await ItemCategory.findAll({
+            const model = await ItemClass.findAll({
                 limit: perPage,
                 offset: page,
                 include:include,
@@ -63,13 +62,13 @@ ItemCategoryController.route('/')
     });
     
 /*
-** List all Categories
+** List all Classes
 */
 
-    ItemCategoryController.route('/list')
+    ItemClassController.route('/list')
     .get( async (req, res)=>{
         try{
-            const model = await ItemCategory.findAll();
+            const model = await ItemClass.findAll();
             console.log(model)
             res.send(model);
         }
@@ -83,7 +82,7 @@ ItemCategoryController.route('/')
 /*
 **  VIEW, UPDATE, DELETE on item/:id
 */
-ItemCategoryController.route('/:id')
+ItemClassController.route('/:id')
     .get(async( req, res )=>{
         try{
             /*
@@ -98,7 +97,7 @@ ItemCategoryController.route('/:id')
             /*
             **  obtener informacion
             */
-            const model = await ItemCategory.findByPk(req.params.id,{
+            const model = await ItemClass.findByPk(req.params.id,{
                 include:include
             });
             res.send(model);
@@ -117,7 +116,7 @@ ItemCategoryController.route('/:id')
             /*
             **  obtener informacion
             */
-            const item = await ItemCategory.findByPk(req.params.id);
+            const item = await ItemClass.findByPk(req.params.id);
             /*
             **  actualizar objeto
             */
@@ -156,21 +155,21 @@ ItemCategoryController.route('/:id')
 **  Joins
 */
 function extraFields(array){
-    if(array.includes('item')){
-        include.push({ 
-            model: Item,
-            required: true,
-            as: 'items',
-            all:true
-        });
-    }
-    if(array.includes('clase')){
-        include.push({ 
-            model: ItemClass, 
-            required: false,
-            as:'class'
-        });
-    }
+    // if(array.includes('item')){
+    //     include.push({ 
+    //         model: Item,
+    //         required: true,
+    //         as: 'items',
+    //         all:true
+    //     });
+    // }
+    // if(array.includes('clase')){
+    //     include.push({ 
+    //         model: ItemClass, 
+    //         required: false,
+    //         as:'class'
+    //     });
+    // }
 }
     
-module.exports = ItemCategoryController;
+module.exports = ItemClassController;

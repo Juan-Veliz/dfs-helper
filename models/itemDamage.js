@@ -1,34 +1,44 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('./index');
-const ItemCategory = require('./itemCategory');
+const Item = require('./item');
+const DamageProperty = require('./damageProperty');
+const DamageType = require('./dagameType');
 
-class Item extends Model {}
+class ItemDamage extends Model {}
 
-Item.init({
-  // const Item = sequelize.define('item' ,{
+ItemDamage.init({
   id: {
     type: DataTypes.NUMBER,
     primaryKey: true,
     autoIncrement:true,
     min:0
   },
-  cat_id: {
+  item_id: {
     type: DataTypes.NUMBER,
     allowNull: false,
     references:{
       type: DataTypes.NUMBER,
-      model:ItemCategory,
+      model:Item,
       key:'id'
     }
   },
-  name:{
-      type: DataTypes.STRING
+  prop_id: {
+    type: DataTypes.NUMBER,
+    allowNull: false,
+    references:{
+      type: DataTypes.NUMBER,
+      model:DamageProperty,
+      key:'id'
+    }
   },
-  level:{
-      type:DataTypes.NUMBER
-  },
-  description:{
-      type:DataTypes.TEXT
+  type_id: {
+    type: DataTypes.NUMBER,
+    allowNull: false,
+    references:{
+      type: DataTypes.NUMBER,
+      model:DamageType,
+      key:'id'
+    }
   },
   created:{
     type: DataTypes.TIME
@@ -45,4 +55,4 @@ Item.init({
   updatedAt: 'modified',
 });
 
-module.exports = Item;
+module.exports = ItemDamage;

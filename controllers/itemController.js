@@ -3,6 +3,7 @@ const express = require('express');
 const Item = require('../models/item');
 const ItemCategory = require('../models/itemCategory');
 const ItemClass = require('../models/itemClass');
+const ItemDamage = require('../models/itemDamage');
 const ItemRecipe = require('../models/itemRecipe');
 const ItemController = express.Router();
 require('../models/relationShips')
@@ -172,15 +173,23 @@ function extraFields(array) {
             });
         }
     }
-    console.log(array.includes('recipe'))
-    if( array.includes('recipe')){
+    if(array.includes('damage')){
         include.push({
-            model: ItemRecipe,
-            required: false,
-            as:'recipe',
-            all:true
+            model:ItemDamage,
+            required:false,
+            // all:true
         })
     }
+    console.log(array.includes('recipe'))
+    // if( array.includes('recipe')){
+    //     console.log("ho")
+    //     include.push({
+    //         model: ItemRecipe,
+    //         required: false,
+    //         as:'recipe',
+    //         all:true
+    //     })
+    // }
 }
 
 module.exports = ItemController;

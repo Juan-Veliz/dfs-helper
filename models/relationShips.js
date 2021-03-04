@@ -3,7 +3,7 @@ const Item = require('./item');
 const ItemCategory = require('./itemCategory');
 const ItemClass = require('./itemClass');
 const ItemRecipe = require('./itemRecipe');
-
+const ItemDamage = require('./itemDamage')
 
 class RelationShips {}
 
@@ -20,38 +20,47 @@ Item.hasOne(ItemCategory, {
 ItemCategory.hasMany(Item,{
 foreignKey:'cat_id',
 sourceKey:'id',
-as:'items'
+as:'item'
 })
 
 /*
 // Item x Recipe x Cooking
 */
 
-Item.hasOne(ItemRecipe, {
-    foreignKey:'item_id',
-    sourceKey:'id',
-    as:'recipe'
-})
+// Item.belongsTo(ItemRecipe, {
+//     foreignKey:'id',
+//     sourceKey:'item_id',
+//     as:'recipe'
+// })
 
-ItemRecipe.hasOne(Item, {
-    foreignKey:'id',
-    sourceKey:'item_id',
-    as:'ingredientes'
-})
+// ItemRecipe.hasOne(Item, {
+//     foreignKey:'id',
+//     sourceKey:'item_id',
+//     as:'ingredientes'
+// })
 
 /*
 ** Category x Class
 */
 ItemCategory.hasOne(ItemClass, {
-foreignKey:'id',
-sourceKey:'class_id',
-as:'class'
+    foreignKey:'id',
+    sourceKey:'class_id',
+    as:'class'
 })
 
 ItemClass.hasMany(ItemCategory, {
-foreignKey:'class_id',
-sourceKey:'id',
-as:'categories'
+    foreignKey:'class_id',
+    sourceKey:'id',
+    as:'categories'
+})
+
+/*
+** Item x Damage
+*/
+
+Item.hasMany(ItemDamage,{
+    foreignKey: 'item_id',
+    sourceKey:'id'
 })
 
 
