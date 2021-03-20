@@ -4,8 +4,8 @@ const Item = require('../models/item');
 const ItemCategory = require('../models/itemCategory');
 const ItemClass = require('../models/itemClass')
 const ItemCategoryController = express.Router();
-require('../models/relationShips')
-let include = [];
+// require('../models/relationShips')
+
 /*
 **  GET, POST on item/
 */
@@ -16,12 +16,13 @@ ItemCategoryController.route('/')
             ** resolver request
             */
             params = req.query;
+            let include = [];
             filters = params.filter;
             perPage = (Number (params['per-page'])) || (Number (params['perPage'])) || 20;
             page = (Number (params.page)-1)*perPage || 0;
             if(params.expand){
                 expands = params.expand.split(',') || [];
-                extraFields(expands);
+                extraFields(expands, include);
             }
 
 
@@ -90,9 +91,10 @@ ItemCategoryController.route('/:id')
             **  resolver request
             */
             params = req.query;
+            let include = [];
             if(params.expand){
                 expands = params.expand.split(',') || [];
-                extraFields(expands);
+                extraFields(expands, include);
             }
 
             /*
@@ -155,8 +157,9 @@ ItemCategoryController.route('/:id')
 /*
 **  Joins
 */
-function extraFields(array){
+function extraFields(array, include){
     if(array.includes('item')){
+        console.log("entro!!")
         include.push({ 
             model: Item,
             required: true,
@@ -164,13 +167,13 @@ function extraFields(array){
             all:true
         });
     }
-    if(array.includes('clase')){
-        include.push({ 
-            model: ItemClass, 
-            required: false,
-            as:'class'
-        });
-    }
+    // if(array.includes('clase')){
+    //     include.push({ 
+    //         model: ItemClass, 
+    //         required: false,
+    //         as:'class'
+    //     });
+    // }
 }
     
 module.exports = ItemCategoryController;

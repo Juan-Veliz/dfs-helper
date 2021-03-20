@@ -45,4 +45,9 @@ Item.init({
   updatedAt: 'modified',
 });
 
+Item.associate = (models)=>{
+  Item.hasOne(ItemCategory, { foreignKey:'id', sourceKey:'cat_id', as:'category' });
+}
+
+
 module.exports = Item;

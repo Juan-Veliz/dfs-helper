@@ -40,6 +40,14 @@ ItemDamage.init({
       key:'id'
     }
   },
+  min:{
+    type: DataTypes.NUMBER,
+    allowNull: true
+  },
+  max:{
+    type: DataTypes.NUMBER,
+    allowNull: true
+  },
   created:{
     type: DataTypes.TIME
   },
@@ -49,7 +57,7 @@ ItemDamage.init({
 }, {
   // Other model options go here
   sequelize, // We need to pass the connection instance
-  modelName: 'item', // We need to choose the model name
+  modelName: 'item_damage', // We need to choose the model name
   freezeTableName: true,
   createdAt:'created',
   updatedAt: 'modified',

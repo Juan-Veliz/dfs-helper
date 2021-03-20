@@ -3,12 +3,13 @@ const express = require('express');
 const Item = require('../models/item');
 const ItemCategory = require('../models/itemCategory');
 const ItemClass = require('../models/itemClass');
+const ItemCooking = require('../models/itemCooking');
 const ItemDamage = require('../models/itemDamage');
 const ItemRecipe = require('../models/itemRecipe');
 const ItemController = express.Router();
-require('../models/relationShips')
+// require('../models/relationShips')
 
-let include = [];
+
 /*
 **  GET, POST on item/
 */
@@ -19,13 +20,16 @@ ItemController.route('/')
             ** resolver request
             */
             params = req.query;
+            include = [];
             filters = params.filter;
             perPage = (Number(params['per-page'])) || (Number(params['perPage'])) || 20;
             order = params['orderBy'] || 'id';
             page = (Number(params.page) - 1) * perPage || 0;
             if (params.expand) {
                 expands = params.expand.split(',') || [];
-                extraFields(expands);
+                // console.log(extraFields(expands))
+                include = extraFields(expands);
+                // res.send(include);
             }
 
             // console.log(include)
@@ -33,7 +37,7 @@ ItemController.route('/')
             /*
             **  obtener informacion
             */
-           console.log(`ecludes : ${include}`)
+        //    console.log(`ecludes : ${include}`)
             const model = await Item.findAll({
                 limit: perPage,
                 offset: page,
@@ -81,10 +85,11 @@ ItemController.route('/:id')
             /*
             **  resolver request
             */
+            include = [];
             params = req.query;
             if (params.expand) {
                 expands = params.expand.split(',') || [];
-                extraFields(expands);
+                include = extraFields(expands);
             }
 
 
@@ -150,8 +155,9 @@ ItemController.route('/:id')
 **  Joins
 */
 function extraFields(array) {
+    included = [];
     if( array.includes('clase')){
-        include.push({
+        included.push({
             model: ItemCategory,
             required: true,
             as: 'category',
@@ -165,31 +171,55 @@ function extraFields(array) {
     }
     else{
         if (array.includes('categoria')) {
-            include.push({
+            included.push({
                 model: ItemCategory,
-                required: true,
+                required: false,
                 as: 'category',
+                separate:false,
                 all:true
             });
         }
     }
     if(array.includes('damage')){
-        include.push({
+        included.push({
             model:ItemDamage,
             required:false,
-            // all:true
+            all:true,
+            as:'damage'
         })
     }
-    console.log(array.includes('recipe'))
-    // if( array.includes('recipe')){
-    //     console.log("ho")
-    //     include.push({
-    //         model: ItemRecipe,
-    //         required: false,
-    //         as:'recipe',
-    //         all:true
-    //     })
-    // }
+    if( array.includes('recipe')){
+        included.push({
+            model: ItemRecipe,
+            
+            required: false,
+            as:'recipe',
+            all:true,
+            include:{
+                model:ItemCooking,
+                required:false,
+                all:true,
+                as:'ingredents'
+            }
+        })
+    }
+    if( array.includes('recettes')){
+        included.push({
+            model: ItemCooking,
+            required: false,
+            as:'recettes',
+            all:true,
+            // include:{
+            //     model:ItemCooking,
+            //     required:false,
+            //     all:true,
+            //     as:'ingredents'
+            // }
+        })
+    }
+    // console.log(" test : ".included)
+    return included;
+    // console.log(include)
 }
 
 module.exports = ItemController;

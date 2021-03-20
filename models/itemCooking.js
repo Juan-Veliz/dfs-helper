@@ -32,14 +32,14 @@ ItemCooking.init({
           key:'id'
         }
     }, 
-    name: {
-        type: DataTypes.STRING,
+    amount: {
+        type: DataTypes.NUMBER,
         allowNull:true
     }
 },
 {
     sequelize,
-    modelName:'item_class',
+    modelName:'item_cooking',
     freezeTableName: true,
     createdAt:false,
     updatedAt: false
